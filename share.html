@@ -1,0 +1,118 @@
+<!-- 保存为 share-generator.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>生成奶茶邀请链接</title>
+    <style>
+        body { 
+            font-family: Arial; 
+            max-width: 600px; 
+            margin: 50px auto; 
+            padding: 20px; 
+        }
+        input, button { 
+            padding: 10px; 
+            margin: 10px 0; 
+            width: 100%; 
+            font-size: 16px; 
+        }
+        .result { 
+            background: #f0f0f0; 
+            padding: 15px; 
+            margin: 20px 0; 
+            border-radius: 5px; 
+            word-break: break-all; 
+        }
+        .copy-btn { 
+            background: #4CAF50; 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+        }
+    </style>
+</head>
+<body>
+    <h2>🍵 生成奶茶邀请链接</h2>
+    
+    <label>你的名字：</label>
+    <input type="text" id="name" placeholder="输入你的名字" value="小明">
+    
+    <label>自定义IP/消息：</label>
+    <input type="text" id="ip" placeholder="输入IP或自定义消息" value="10.0.0.1">
+    
+    <label>选择页面样式：</label>
+    <select id="style">
+        <option value="default">默认样式</option>
+        <option value="simple">简洁样式</option>
+        <option value="funny">搞笑样式</option>
+    </select>
+    
+    <button onclick="generateLink()">生成分享链接</button>
+    
+    <div id="resultBox" style="display:none;">
+        <h3>你的专属链接：</h3>
+        <div class="result" id="linkResult"></div>
+        <button class="copy-btn" onclick="copyLink()">复制链接</button>
+        
+        <h3>微信分享文案：</h3>
+        <div class="result" id="wechatText"></div>
+        <button class="copy-btn" onclick="copyWechat()">复制文案</button>
+        
+        <h3>或者扫码分享：</h3>
+        <div id="qrcode"></div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.0/build/qrcode.min.js"></script>
+    <script>
+        // 你的页面地址（部署后修改这个）
+        const BASE_URL = "https://your-site.netlify.app";  // 替换为你的实际地址
+        
+        function generateLink() {
+            const name = document.getElementById('name').value || '好友';
+            const ip = document.getElementById('ip').value || '192.168.1.1';
+            const style = document.getElementById('style').value;
+            
+            // 生成链接
+            const link = `${BASE_URL}/?friend=${encodeURIComponent(name)}&ip=${encodeURIComponent(ip)}&style=${style}`;
+            
+            // 显示结果
+            document.getElementById('linkResult').innerHTML = `
+                <a href="${link}" target="_blank">${link}</a>
+            `;
+            
+            // 生成微信分享文案
+            const wechatText = `🥤【${name}】邀请你一起喝奶茶！
+${link}`;
+            document.getElementById('wechatText').textContent = wechatText;
+            
+            // 生成二维码
+            document.getElementById('qrcode').innerHTML = '';
+            QRCode.toCanvas(document.getElementById('qrcode'), link, {
+                width: 200,
+                height: 200
+            });
+            
+            // 显示结果区域
+            document.getElementById('resultBox').style.display = 'block';
+        }
+        
+        function copyLink() {
+            const text = document.getElementById('linkResult').querySelector('a').href;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('链接已复制！');
+            });
+        }
+        
+        function copyWechat() {
+            const text = document.getElementById('wechatText').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('文案已复制！');
+            });
+        }
+        
+        // 页面加载时自动生成示例链接
+        window.onload = generateLink;
+    </script>
+</body>
+</html>
