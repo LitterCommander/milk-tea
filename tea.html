@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>请我喝奶茶吗？</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #e63946;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 40px;
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+            position: relative;
+            min-height: 120px;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.5em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .yes-btn {
+            background: linear-gradient(45deg, #4CAF50, #8BC34A);
+            color: white;
+            z-index: 2;
+        }
+        
+        .no-btn {
+            background: linear-gradient(45deg, #f44336, #FF9800);
+            color: white;
+            z-index: 1;
+        }
+        
+        .yes-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        .no-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
+        }
+        
+        .result {
+            margin-top: 40px;
+            font-size: 2em;
+            color: #e63946;
+            font-weight: bold;
+            min-height: 60px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .result.show {
+            opacity: 1;
+        }
+        
+        .tea-cup {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            background: linear-gradient(45deg, #795548, #A1887F);
+            border-radius: 0 0 40px 40px;
+            position: relative;
+        }
+        
+        .tea-cup:before {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 20px;
+            background: #795548;
+            right: -40px;
+            top: 20px;
+            border-radius: 0 20px 20px 0;
+        }
+        
+        .tea {
+            position: absolute;
+            width: 90%;
+            height: 70%;
+            background: linear-gradient(45deg, #C62828, #FF7043);
+            border-radius: 0 0 35px 35px;
+            bottom: 0;
+            left: 5%;
+        }
+        
+        .bubble {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 2s infinite ease-in-out;
+        }
+        
+        .bubble:nth-child(1) {
+            width: 15px;
+            height: 15px;
+            top: 20px;
+            left: 20px;
+            animation-delay: 0s;
+        }
+        
+        .bubble:nth-child(2) {
+            width: 10px;
+            height: 10px;
+            top: 10px;
+            right: 25px;
+            animation-delay: 0.5s;
+        }
+        
+        .bubble:nth-child(3) {
+            width: 8px;
+            height: 8px;
+            top: 30px;
+            right: 15px;
+            animation-delay: 1s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .tip {
+            margin-top: 30px;
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="tea-cup">
+            <div class="tea"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+        </div>
+        
+        <h1>请我喝奶茶吗？</h1>
+        <p class="subtitle">你的好友正在向你发送奶茶请求 🥤</p>
+        
+        <div class="buttons">
+            <button class="btn yes-btn" onclick="handleYes()">请喝奶茶</button>
+            <button class="btn no-btn" onclick="handleNo()">不请</button>
+        </div>
+        
+        <div class="result" id="result"></div>
+        
+        <p class="tip">点击"请喝奶茶"表示同意，点击"不请"会有意外效果哦~</p>
+    </div>
+
+    <script>
+        let noClickCount = 0;
+        const maxNoClicks = 5;
+        
+        function handleYes() {
+            const result = document.getElementById('result');
+            result.textContent = '😍 爱你哟！下次见面请我喝奶茶~';
+            result.classList.add('show');
+            
+            // 添加一些特效
+            document.querySelector('.yes-btn').style.transform = 'scale(1.2)';
+            document.querySelector('.no-btn').style.display = 'none';
+            
+            // 3秒后重置
+            setTimeout(() => {
+                result.classList.remove('show');
+                setTimeout(() => {
+                    result.textContent = '';
+                }, 500);
+            }, 3000);
+        }
+        
+        function handleNo() {
+            noClickCount++;
+            const yesBtn = document.querySelector('.yes-btn');
+            const noBtn = document.querySelector('.no-btn');
+            const buttonsDiv = document.querySelector('.buttons');
+            
+            if (noClickCount <= maxNoClicks) {
+                // 让"请"按钮变大
+                yesBtn.style.transform = `scale(${1 + noClickCount * 0.1})`;
+                yesBtn.textContent = `请喝奶茶 x${noClickCount}`;
+                
+                // 让"不请"按钮变小并移动
+                noBtn.style.transform = `scale(${1 - noClickCount * 0.1})`;
+                
+                // 随机移动"不请"按钮的位置
+                const moveDistance = 20 + noClickCount * 10;
+                const directions = [
+                    {x: moveDistance, y: 0},
+                    {x: -moveDistance, y: 0},
+                    {x: 0, y: moveDistance},
+                    {x: 0, y: -moveDistance}
+                ];
+                
+                const direction = directions[Math.floor(Math.random() * directions.length)];
+                noBtn.style.transform += ` translate(${direction.x}px, ${direction.y}px)`;
+                
+                // 显示提示
+                const messages = [
+                    "再考虑一下嘛~",
+                    "真的不请吗？",
+                    "奶茶很好喝的！",
+                    "最后问一次哦~",
+                    "确定不请我吗？🥺"
+                ];
+                
+                document.getElementById('result').textContent = messages[noClickCount - 1];
+                document.getElementById('result').classList.add('show');
+                
+                setTimeout(() => {
+                    document.getElementById('result').classList.remove('show');
+                }, 1000);
+            }
+            
+            // 如果点击次数达到上限，强制显示"爱你"
+            if (noClickCount >= maxNoClicks) {
+                setTimeout(() => {
+                    handleYes();
+                }, 500);
+            }
+        }
+        
+        // 添加一些初始动画
+        document.addEventListener('DOMContentLoaded', () => {
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach((btn, index) => {
+                btn.style.opacity = '0';
+                btn.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    btn.style.transition = 'all 0.5s ease';
+                    btn.style.opacity = '1';
+                    btn.style.transform = 'translateY(0)';
+                }, 300 + index * 200);
+            });
+        });
+    </script>
+</body>
+</html>
